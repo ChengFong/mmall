@@ -123,6 +123,7 @@ public class ProductManageController {
 
     /**
      * 後台商品列表動態分頁功能開發
+     *
      * @param session
      * @param pageNum
      * @param pageSize
@@ -200,7 +201,7 @@ public class ProductManageController {
         if(iUserService.checkAdminRole(user).isSuccess()){
 
             //填充業務
-            String path = request.getSession().getServletContext().getRealPath("upload");
+            String path =  PropertiesUtil.getProperty("image.path");
             String targetFileName = iFileService.upload(file, path);
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
 
@@ -244,7 +245,7 @@ public class ProductManageController {
         if(iUserService.checkAdminRole(user).isSuccess()){
 
             //填充業務
-            String path = request.getSession().getServletContext().getRealPath("upload");
+            String path =  PropertiesUtil.getProperty("image.path");
             String targetFileName = iFileService.upload(file, path);
             String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
 

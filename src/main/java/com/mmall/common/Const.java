@@ -27,7 +27,6 @@ public class Const {
         String LIMIT_NUM_SUCCESS = "LIMIT_NUM_SUCCESS";
     }
 
-
     public interface Role{
         int ROLE_CUSTOMER = 0; //普通用戶
         int ROLE_ADMIN = 1; //管理員
@@ -35,7 +34,8 @@ public class Const {
 
     public enum ProductStatusEnum{
 
-        ON_SALE(1, "在現");
+        ON_SALE(1, "在現"),
+        NOT_EXIST(2, "商品不存在");
 
         private int code;
         private String value;

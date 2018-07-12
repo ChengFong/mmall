@@ -9,6 +9,7 @@ import com.mmall.vo.CartVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -39,13 +40,14 @@ public class CartController {
         return iCartService.list(user.getId());
     }
 
-    @RequestMapping("add.do")
+    @RequestMapping(value = "add.do", method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<CartVo> add(HttpSession session, Integer productId, Integer count){
 
         User user = (User)session.getAttribute(Const.CURRENT_USER);
 
         if(user == null){
+
             return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), ResponseCode.NEED_LOGIN.getDesc());
         }
 

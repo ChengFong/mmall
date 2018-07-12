@@ -40,6 +40,12 @@ public class CartServiceImpl implements ICartService{
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(),ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
 
+        Product product = productMapper.selectByPrimaryKey(productId);
+
+        if(product == null){
+
+            return ServerResponse.createByErrorCodeMessage(Const.ProductStatusEnum.NOT_EXIST.getCode(), Const.ProductStatusEnum.NOT_EXIST.getValue());
+        }
 
         Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
 
@@ -74,6 +80,13 @@ public class CartServiceImpl implements ICartService{
             return ServerResponse.createByErrorCodeMessage(ResponseCode.ILLEGAL_ARGUMENT.getCode(), ResponseCode.ILLEGAL_ARGUMENT.getDesc());
         }
 
+        Product product = productMapper.selectByPrimaryKey(productId);
+
+        if(product == null){
+
+            return ServerResponse.createByErrorCodeMessage(Const.ProductStatusEnum.NOT_EXIST.getCode(), Const.ProductStatusEnum.NOT_EXIST.getValue());
+        }
+
         Cart cart = cartMapper.selectCartByUserIdProductId(userId, productId);
         if(cart != null){
 
@@ -100,6 +113,8 @@ public class CartServiceImpl implements ICartService{
     }
 
     public ServerResponse<CartVo> list(Integer userId){
+
+        System.out.print(userId);
 
         CartVo cartVo = this.getCartVoLimit(userId);
 

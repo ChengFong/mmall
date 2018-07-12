@@ -1,19 +1,25 @@
 package com.mmall.controller.portal;
 
+import com.google.common.collect.Maps;
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.IOrderService;
+import com.mmall.util.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * 訂單接口
@@ -95,4 +101,41 @@ public class OrderController {
 
         return iOrderService.getOrderList(user.getId(), pageNum, pageSize);
     }
+
+    //pay
+    @RequestMapping(value = "pay.do", method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse pay(HttpSession session, Long orderNo){
+
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+
+        if(user ==null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+
+        return iOrderService.pay(user.getId(), orderNo);
+    }
+
+
+    @RequestMapping("query_order_pay_status.do")
+    @ResponseBody
+    public ServerResponse<Boolean> queryOrderPayStatus(HttpSession session, Long orderNo){
+
+        User user = (User)session.getAttribute(Const.CURRENT_USER);
+
+        if(user ==null){
+            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(),ResponseCode.NEED_LOGIN.getDesc());
+        }
+
+        ServerResponse serverResponse = iOrderService.queryOrderPayStatus(user.getId(), orderNo);
+
+        if(serverResponse.isSuccess()){
+
+            return ServerResponse.createBySuccess(true);
+        }
+
+        return ServerResponse.createBySuccess(false);
+    }
+
+
 }

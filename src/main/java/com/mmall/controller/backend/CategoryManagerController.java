@@ -15,6 +15,8 @@ import com.mmall.common.ServerResponse;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * 分類接口
+ *
  * Created by 林成峰 on 2017/8/3.
  */
 @Controller

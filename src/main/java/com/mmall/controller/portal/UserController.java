@@ -52,7 +52,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "logout.do", method = RequestMethod.POST)
+    @RequestMapping(value = "logout.do")
     @ResponseBody
     public ServerResponse<String> logout(HttpSession session){
 
@@ -95,7 +95,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "get_user_info.do", method = RequestMethod.POST)
+    @RequestMapping(value = "get_user_info.do")
     @ResponseBody
     public ServerResponse<User> getUserInfo(HttpSession session){
 
@@ -115,7 +115,7 @@ public class UserController {
      * @param username
      * @return
      */
-    @RequestMapping(value = "forget_get_question.do", method = RequestMethod.POST)
+    @RequestMapping(value = "forget_get_question.do")
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username){
 
@@ -131,7 +131,7 @@ public class UserController {
      * @param answer
      * @return
      */
-    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.POST)
+    @RequestMapping(value = "forget_check_answer.do")
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer){
 
@@ -215,7 +215,7 @@ public class UserController {
      * @param session
      * @return
      */
-    @RequestMapping(value = "get_information.do", method = RequestMethod.POST)
+    @RequestMapping(value = "get_information.do")
     @ResponseBody
     public ServerResponse<User> get_information(HttpSession session){
 
