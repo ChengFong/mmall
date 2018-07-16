@@ -1,14 +1,10 @@
 package com.mmall.controller.backend;
 
 import com.google.common.collect.Maps;
-import com.mmall.common.Const;
-import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
-import com.mmall.pojo.User;
 import com.mmall.service.IFileService;
 import com.mmall.service.IProductService;
-import com.mmall.service.IUserService;
 import com.mmall.util.PropertiesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 /**
@@ -33,9 +28,6 @@ import java.util.Map;
 public class ProductManageController {
 
     @Autowired
-    private IUserService iUserService;
-
-    @Autowired
     private IProductService iProductService;
 
     @Autowired
@@ -43,118 +35,63 @@ public class ProductManageController {
 
     /**
      * 商品新增，保存
-     * @param session
+     *
      * @param product
      * @return
      */
     @RequestMapping("save.do")
     @ResponseBody
-    public ServerResponse productSave(HttpSession session, Product product){
+    public ServerResponse productSave(Product product){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        return iProductService.saveOrUpdateProduct(product);
 
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //增加我們添加產品的業務邏輯
-            return iProductService.saveOrUpdateProduct(product);
-
-        }else{
-
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
     }
 
     /**
      * 上下架功能開發
-     * @param session
+     *
      * @param productId
      * @param status
      * @return
      */
     @RequestMapping("set_sale_status.do")
     @ResponseBody
-    public ServerResponse setSaleStatus(HttpSession session, Integer productId, Integer status){
+    public ServerResponse setSaleStatus(Integer productId, Integer status){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-            return iProductService.setSaleStatus(productId, status);
-        }else{
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iProductService.setSaleStatus(productId, status);
     }
 
     /**
      * 後台獲取商品詳情功能開發
-     * @param session
+     *
      * @param productId
      * @return
      */
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse getDetail(HttpSession session, Integer productId){
+    public ServerResponse getDetail(Integer productId){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iProductService.manageProductDetail(productId);
-
-        }else{
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iProductService.manageProductDetail(productId);
     }
 
     /**
      * 後台商品列表動態分頁功能開發
      *
-     * @param session
      * @param pageNum
      * @param pageSize
      * @return
      */
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse getList(HttpSession session,
-                                  @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+    public ServerResponse getList(@RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iProductService.getProductList(pageNum, pageSize);
-
-        }else{
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iProductService.getProductList(pageNum, pageSize);
     }
 
     /**
      * 後台商品搜索功能開發
-     * @param session
+     *
      * @param productName
      * @param productId
      * @param pageNum
@@ -163,114 +100,70 @@ public class ProductManageController {
      */
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse productSearch(HttpSession session,
-                                        String productName,
+    public ServerResponse productSearch(String productName,
                                         Integer productId,
                                   @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                   @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iProductService.searchProduct(productName, productId, pageNum, pageSize);
-
-        }else{
-
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iProductService.searchProduct(productName, productId, pageNum, pageSize);
     }
 
+    /**
+     * 檔案上傳
+     *
+     * @param file
+     * @param request
+     * @return
+     */
     @RequestMapping("upload.do")
     @ResponseBody
-    public ServerResponse upload(HttpSession session, @RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request){
+    public ServerResponse upload(@RequestParam(value = "upload_file", required = false) MultipartFile file, HttpServletRequest request){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        //填充業務
+        String path =  PropertiesUtil.getProperty("image.path");
+        String targetFileName = iFileService.upload(file, path);
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
 
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
+        Map fileMap = Maps.newHashMap();
+        fileMap.put("uri", targetFileName);
+        fileMap.put("url", url);
 
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            String path =  PropertiesUtil.getProperty("image.path");
-            String targetFileName = iFileService.upload(file, path);
-            String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
-
-            Map fileMap = Maps.newHashMap();
-            fileMap.put("uri", targetFileName);
-            fileMap.put("url", url);
-
-            return ServerResponse.createBySuccess(fileMap);
-
-        }else{
-
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return ServerResponse.createBySuccess(fileMap);
     }
 
+    /**
+     * 富文本檔案上傳(Simditor)
+     *
+     * @param file
+     * @param response
+     * @return
+     */
     @RequestMapping("richtext_img_upload.do")
     @ResponseBody
-    public Map richtextImgUpload(HttpSession session, @RequestParam(value = "upload_file", required = false) MultipartFile file,
-                                 HttpServletRequest request, HttpServletResponse response){
+    public Map richtextImgUpload(@RequestParam(value = "upload_file", required = false) MultipartFile file,
+                                 HttpServletResponse response) {
 
         Map resultMap = Maps.newHashMap();
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        //填充業務
+        String path = PropertiesUtil.getProperty("image.path");
+        String targetFileName = iFileService.upload(file, path);
+        String url = PropertiesUtil.getProperty("ftp.server.http.prefix") + targetFileName;
 
-        if(user == null){
+        if (StringUtils.isBlank(targetFileName)) {
 
             resultMap.put("success", false);
-            resultMap.put("msg", "用戶未登錄，請登陸");
+            resultMap.put("msg", "上傳失敗");
 
             return resultMap;
         }
 
-        //富文本中對於返回值有自己的要求，我們使用的是Simditor所以按照Simditor要求進行返回
-//        {
-//            "success": true/false,
-//                "msg": "error message", # optional
-//            "file_path": "[real file path]"
-//        }
+        resultMap.put("success", true);
+        resultMap.put("msg", "上傳成功");
+        resultMap.put("file_path", url);
 
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
+        response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
 
-            //填充業務
-            String path =  PropertiesUtil.getProperty("image.path");
-            String targetFileName = iFileService.upload(file, path);
-            String url = PropertiesUtil.getProperty("ftp.server.http.prefix")+targetFileName;
-
-            if(StringUtils.isBlank(targetFileName)){
-
-                resultMap.put("success", false);
-                resultMap.put("msg", "上傳失敗");
-
-                return resultMap;
-            }
-
-            resultMap.put("success", true);
-            resultMap.put("msg", "上傳成功");
-            resultMap.put("file_path", url);
-
-            response.addHeader("Access-Control-Allow-Headers", "X-File-Name");
-
-            return resultMap;
-
-        }else{
-
-            resultMap.put("success", false);
-            resultMap.put("msg", "無權限操作，需要管理員權限操作");
-
-            return resultMap;
-        }
+        return resultMap;
     }
 }

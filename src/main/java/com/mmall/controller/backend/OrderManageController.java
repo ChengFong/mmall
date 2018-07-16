@@ -1,9 +1,6 @@
 package com.mmall.controller.backend;
 
-import com.mmall.common.Const;
-import com.mmall.common.ResponseCode;
 import com.mmall.common.ServerResponse;
-import com.mmall.pojo.User;
 import com.mmall.service.IOrderService;
 import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
 
 /**
+ * 後台-訂單管理
+ *
  * Created by 林成峰 on 2017/8/16.
  */
 @Controller
@@ -22,98 +21,65 @@ import javax.servlet.http.HttpSession;
 public class OrderManageController {
 
     @Autowired
-    IUserService iUserService;
-
-    @Autowired
     IOrderService iOrderService;
 
+    /**
+     * 訂單列表
+     *
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("list.do")
     @ResponseBody
-    public ServerResponse list(HttpSession session,
+    public ServerResponse list(
                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iOrderService.manageList(pageNum, pageSize);
-
-        }else{
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iOrderService.manageList(pageNum, pageSize);
     }
 
+    /**
+     * 訂單詳情
+     *
+     * @param orderNo
+     * @return
+     */
     @RequestMapping("detail.do")
     @ResponseBody
-    public ServerResponse detail(HttpSession session, Long orderNo){
+    public ServerResponse detail(Long orderNo){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iOrderService.manageDetail(orderNo);
-
-        }else{
-
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iOrderService.manageDetail(orderNo);
     }
 
+    /**
+     * 訂單查詢
+     *
+     * @param orderNo
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
     @RequestMapping("search.do")
     @ResponseBody
-    public ServerResponse orderSearch(HttpSession session,
-                                      Long orderNo,
+    public ServerResponse orderSearch(Long orderNo,
                                       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iOrderService.manageSearch(orderNo, pageNum, pageSize);
-
-        }else{
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iOrderService.manageSearch(orderNo, pageNum, pageSize);
     }
 
+    /**
+     * 寄貨
+     *
+     * @param session
+     * @param orderNo
+     * @return
+     */
     @RequestMapping("send_goods.do")
     @ResponseBody
     public ServerResponse<String> orderSendGoods(HttpSession session, Long orderNo){
 
-        User user = (User) session.getAttribute(Const.CURRENT_USER);
-
-        if(user == null){
-            return ServerResponse.createByErrorCodeMessage(ResponseCode.NEED_LOGIN.getCode(), "用戶未登錄，請登陸");
-        }
-
-        //校驗一下是否是管理員
-        if(iUserService.checkAdminRole(user).isSuccess()){
-
-            //填充業務
-            return iOrderService.manageSendGoods(orderNo);
-
-        }else{
-            return ServerResponse.createByErrorMessage("無權限操作，需要管理員權限操作");
-        }
+        return iOrderService.manageSendGoods(orderNo);
     }
 }

@@ -1,19 +1,9 @@
 package com.mmall.service.impl;
 
-import com.alipay.api.AlipayResponse;
-import com.alipay.api.response.AlipayTradePrecreateResponse;
-import com.alipay.demo.trade.config.Configs;
-import com.alipay.demo.trade.model.ExtendParams;
-import com.alipay.demo.trade.model.GoodsDetail;
-import com.alipay.demo.trade.model.builder.AlipayTradePrecreateRequestBuilder;
-import com.alipay.demo.trade.model.result.AlipayF2FPrecreateResult;
-import com.alipay.demo.trade.service.AlipayTradeService;
-import com.alipay.demo.trade.service.impl.AlipayTradeServiceImpl;
-import com.alipay.demo.trade.utils.ZxingUtils;
+
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.mmall.common.Const;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.*;
@@ -21,23 +11,20 @@ import com.mmall.pojo.*;
 import com.mmall.service.IOrderService;
 import com.mmall.util.BigDecimalUtil;
 import com.mmall.util.DateTimeUtil;
-import com.mmall.util.FTPUtil;
 import com.mmall.util.PropertiesUtil;
 import com.mmall.vo.OrderItemVo;
 import com.mmall.vo.OrderProductVo;
 import com.mmall.vo.OrderVo;
 import com.mmall.vo.ShippingVo;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by 林成峰 on 2017/8/12.
